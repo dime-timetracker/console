@@ -1,0 +1,17 @@
+{
+  "name": "DimeConsole",
+  "require": {
+    "guzzlehttp/guzzle": "~6.0",
+    "symfony/console": "2.1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "DimeConsole\\": "src"
+    }
+  },
+  "authors": [
+    {
+      "name": "Thomas Jez"
+    }
+  ]
+}
