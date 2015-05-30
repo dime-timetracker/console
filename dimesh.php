@@ -1,11 +1,10 @@
 <?php
-require 'vendor/autoload.php';
-if (!($argc === 3 and $argv[1] === 'activities' and $argv[2] === 'show')) {
-    echo 'Sorry, for now we have only the command "activities and the subcommand "show", so please type "php dimesh.php activities show"' . PHP_EOL;
-} else {
-    $console = new DimeConsole\DimeConsole();
-    $console->readConfig();
-    $console->login();
-    $console->showActivities();
-}
 
+require __DIR__.'/vendor/autoload.php';
+
+use DimeConsole\ActivitiesCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+$application->add(new ActivitiesCommand());
+$application->run();
