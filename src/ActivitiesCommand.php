@@ -31,6 +31,7 @@ class ActivitiesCommand extends Command
             $console->readConfig();
             $console->login();
             $console->showActivities();
+            $console->logout();
 
         } else {
             $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommand "show", so please type "php dimesh.php activities show"</error>');
