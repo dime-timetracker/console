@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\Table;
 
 class ActivitiesCommand extends Command
 {
@@ -30,9 +31,14 @@ class ActivitiesCommand extends Command
             $console = new DimeConsole();
             $console->readConfig();
             $console->login();
-            $console->showActivities();
+            $result = $console->showActivities();
             $console->logout();
 
+            $table = new Table($output);
+            $table
+                ->setHeaders(array('Id', 'Description'))
+                ->setRows($result);
+            $table->render();
         } else {
             $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommand "show", so please type "php dimesh.php activities show"</error>');
         }

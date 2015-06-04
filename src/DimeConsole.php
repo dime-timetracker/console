@@ -67,8 +67,13 @@ class DimeConsole
         $response = $this->client->get($this->baseUrl . $route, ['headers' => $headers]);
         $activities = json_decode($response->getBody()->getContents());
 
+        $output = [];
         foreach ($activities as $activity) {
-            echo $activity->description . PHP_EOL;
+            $outputLine = [];
+            $outputLine['id'] = $activity->id;
+            $outputLine['description'] = $activity->description;
+            $output[] = $outputLine;
         }
+        return $output;
     }
 }
