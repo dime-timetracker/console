@@ -82,4 +82,23 @@ class DimeClient
         }
         return $output;
     }
+
+    public function resumeActivity($activityId) {
+        $route = '/public/api/timeslice';
+        $startedAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $postData = [
+            'startedAt' => $startedAt,
+            'duration' => 0,
+            'activity' => (integer)$activityId,
+        ];
+        $postString = json_encode($postData);
+        $headers = [
+            'Accept' => 'application/json, text/*',
+            'Content-Type' => 'application/json; charset=utf-8',
+            'Content-Length' => strlen($postString),
+            'Authorization' =>  $this->authString,
+        ];
+        $response = $this->client->post($this->baseUrl . $route, ['headers' => $headers, 'body' => $postString]);
+        return $response->getStatusCode();
+    }
 }
