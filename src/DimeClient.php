@@ -2,7 +2,7 @@
 namespace DimeConsole;
 use GuzzleHttp\Client;
 
-class DimeConsole
+class DimeClient
 {
     protected $clientId = '5F30E334-52A6-42D3-BE39-3719DE137C08';
     protected $username;
@@ -15,6 +15,12 @@ class DimeConsole
 
     public function __construct() {
         $this->client = new Client();
+        $this->readConfig();
+        $this->login();
+    }
+
+    public function __destruct() {
+        $this->logout();
     }
 
     public function readConfig() {
@@ -57,7 +63,7 @@ class DimeConsole
         $this->client->post($this->baseUrl . $route, ['headers' => $headers]);
     }
 
-    public function showActivities() {
+    public function requestActivities() {
         $route = '/public/api/activity';
         $headers = [
             'Authorization' =>  $this->authString,

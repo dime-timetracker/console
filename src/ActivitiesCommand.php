@@ -11,6 +11,8 @@ use Symfony\Component\Console\Helper\Table;
 
 class ActivitiesCommand extends Command
 {
+    protected $client;
+
     protected function configure()
     {
         $this
@@ -26,21 +28,22 @@ class ActivitiesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('task');
-        if ($name === 'show') {
-            $console = new DimeConsole();
-            $console->readConfig();
-            $console->login();
-            $result = $console->showActivities();
-            $console->logout();
-
-            $table = new Table($output);
-            $table
-                ->setHeaders(array('Id', 'Description'))
-                ->setRows($result);
-            $table->render();
+        $this->client = new DimeClient();
+        $task = $input->getArgument('task');
+        if ($task === 'show') {
+            $this->showActivities($output);
         } else {
             $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommand "show", so please type "php dimesh.php activities show"</error>');
         }
+    }
+
+    protected function showActivities(OutputInterface $output) {
+        $result = $this->client->requestActivities();
+
+        $table = new Table($output);
+        $table
+            ->setHeaders(array('Id', 'Description'))
+            ->setRows($result);
+        $table->render();
     }
 }
