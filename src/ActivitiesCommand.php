@@ -34,8 +34,10 @@ class ActivitiesCommand extends Command
             $this->showActivities($output);
         } elseif ($task[0] === 'resume') {
             $this->resumeActivity($output, $task);
+        } elseif ($task[0] === 'stop') {
+            $this->stopActivity($output, $task);
         } else {
-            $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommands "show" and "resume"</error>');
+            $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommands "show", "resume" and "stop".</error>');
         }
     }
 
@@ -44,30 +46,46 @@ class ActivitiesCommand extends Command
 
         $table = new Table($output);
         $table
-            ->setHeaders(array('Id', 'Description'))
+            ->setHeaders(array('Id', 'Description', 'Status'))
             ->setRows($result);
         $table->render();
     }
 
     protected function resumeActivity(OutputInterface $output, $task) {
-        $result = $this->client->requestActivities();
-        $activityIds = [];
-        foreach ($result as $line) {
-            $activityIds[] = $line['id'];
-        }
-        if (!(isset($task[1]) and in_array($task[1], $activityIds))) {
-            $output->write('<error>Please give a valid activity Id "php dimesh.php activities resume <activity_id>"');
-            $output->writeln('</error>');
-            $output->writeln('<comment>You have the following activities:');
-            $this->showActivities($output);
-            $output->writeln('</comment>');
+        if (!$this->checkNumberOfArguments($output, $task)) {
             return;
         }
         $statusCode = $this->client->resumeActivity($task[1]);
         if ($statusCode === 200) {
-            $output->writeln('<info>Activitiy resumed</info>');
+            $output->writeln('<info>Activity ' . $task[1] . ' resumed</info>');
         } else {
             $output->writeln('<error>Couldn\'t resume activity</error>');
+        }
+    }
+
+    protected function stopActivity(OutputInterface $output, $task) {
+        if (!$this->checkNumberOfArguments($output, $task)) {
+            return;
+        }
+        $statusCode = $this->client->stopActivity($task[1]);
+        if ($statusCode === 200) {
+            $output->writeln('<info>Activity ' . $task[1] . ' stopped</info>');
+        } else {
+            $output->writeln('<error>Couldn\'t stop activity</error>');
+        }
+    }
+
+    protected function checkNumberOfArguments(OutputInterface $output, $task) {
+        if (!(isset($task[1]))) {
+            $output->writeln('');
+            $output->writeln('<error>');
+            $output->writeln('                                                                                    ');
+            $output->writeln('  Please give a valid activity id: "php dimesh.php activities resume <activity_id>" ');
+            $output->writeln('                                                                                    ');
+            $output->writeln('</error>');
+            return false;
+        } else {
+            return true;
         }
     }
 }
