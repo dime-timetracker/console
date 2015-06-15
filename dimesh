@@ -1,10 +1,11 @@
+#!/usr/bin/php
 <?php
 
 require __DIR__.'/vendor/autoload.php';
 
 use DimeConsole\ActivitiesCommand;
-use Symfony\Component\Console\Application;
+use DimeConsole\DimeShellApplication;
 
-$application = new Application();
+$application = new DimeShellApplication();
 $application->add(new ActivitiesCommand());
 $application->run();
