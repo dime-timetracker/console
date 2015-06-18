@@ -91,6 +91,22 @@ class DimeClient
         return $output;
     }
 
+    public function requestActivityIds() {
+        $route = '/public/api/activity';
+        $headers = [
+            'Authorization' =>  $this->authString,
+            'Accept' => 'application/json, text/*',
+        ];
+
+        $response = $this->client->get($this->baseUrl . $route, ['headers' => $headers]);
+        $activities = json_decode($response->getBody()->getContents());
+        $ids = [];
+        foreach ($activities as $activity) {
+            $ids[] = $activity->id;
+        }
+        return $ids;
+    }
+
     public function resumeActivity($activityId) {
         $this->checkActivityId($activityId);
         $timeslices = $this->requestTimeslices($activityId);

@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
+use Stecman\Component\Symfony\Console\BashCompletion\CompletionContext;
 
 class ActivitiesCommand extends Command
 {
@@ -20,8 +21,14 @@ class ActivitiesCommand extends Command
             ->setDescription('Does something with activitities')
             ->addArgument(
                 'task',
-                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+                InputArgument::REQUIRED,
                 'What do you want to do with your activities?'
+            )
+            ->addOption(
+                'id',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Which activity?'
             )
        ;
     }
@@ -30,12 +37,19 @@ class ActivitiesCommand extends Command
     {
         $this->client = new DimeClient();
         $task = $input->getArgument('task');
-        if ($task[0] === 'show') {
+        $activityId = $input->getOption('id');
+        if ($task === 'show') {
             $this->showActivities($output);
-        } elseif ($task[0] === 'resume') {
-            $this->resumeActivity($output, $task);
-        } elseif ($task[0] === 'stop') {
-            $this->stopActivity($output, $task);
+        } elseif ($task === 'resume') {
+            if ($activityId === null) {
+                throw new \Exception('no activity id given');
+            }
+            $this->resumeActivity($output, $activityId);
+        } elseif ($task === 'stop') {
+            if ($activityId === null) {
+                throw new \Exception('no activity id given');
+            }
+            $this->stopActivity($output, $activityId);
         } else {
             $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommands "show", "resume" and "stop".</error>');
         }
@@ -51,41 +65,21 @@ class ActivitiesCommand extends Command
         $table->render();
     }
 
-    protected function resumeActivity(OutputInterface $output, $task) {
-        if (!$this->checkNumberOfArguments($output, $task)) {
-            return;
-        }
-        $statusCode = $this->client->resumeActivity($task[1]);
+    protected function resumeActivity(OutputInterface $output, $activityId) {
+        $statusCode = $this->client->resumeActivity($activityId);
         if ($statusCode === 200) {
-            $output->writeln('<info>Activity ' . $task[1] . ' resumed</info>');
+            $output->writeln('<info>Activity ' . $activityId . ' resumed</info>');
         } else {
             $output->writeln('<error>Couldn\'t resume activity</error>');
         }
     }
 
-    protected function stopActivity(OutputInterface $output, $task) {
-        if (!$this->checkNumberOfArguments($output, $task)) {
-            return;
-        }
-        $statusCode = $this->client->stopActivity($task[1]);
+    protected function stopActivity(OutputInterface $output, $activityId) {
+        $statusCode = $this->client->stopActivity($activityId);
         if ($statusCode === 200) {
-            $output->writeln('<info>Activity ' . $task[1] . ' stopped</info>');
+            $output->writeln('<info>Activity ' . $activityId . ' stopped</info>');
         } else {
             $output->writeln('<error>Couldn\'t stop activity</error>');
-        }
-    }
-
-    protected function checkNumberOfArguments(OutputInterface $output, $task) {
-        if (!(isset($task[1]))) {
-            $output->writeln('');
-            $output->writeln('<error>');
-            $output->writeln('                                                                                    ');
-            $output->writeln('  Please give a valid activity id: "php dimesh.php activities resume <activity_id>" ');
-            $output->writeln('                                                                                    ');
-            $output->writeln('</error>');
-            return false;
-        } else {
-            return true;
         }
     }
 }

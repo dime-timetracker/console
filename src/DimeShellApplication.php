@@ -9,7 +9,7 @@ class DimeShellApplication extends Application
     protected function getDefaultCommands()
     {
         $commands = parent::getDefaultCommands();
-        $commands[] = new \Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand();
+        $commands[] = new DimeShellCompletionCommand();
         return $commands;
     }
 }
