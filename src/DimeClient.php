@@ -24,7 +24,7 @@ class DimeClient
     }
 
     public function readConfig() {
-        $configXml = simplexml_load_file('config.xml');
+        $configXml = simplexml_load_file(dirname(__DIR__) . '/config.xml');
         $this->username = (string)$configXml->username;
         $this->password = (string)$configXml->password;
         $this->baseUrl = (string)$configXml->baseUrl;
