@@ -64,14 +64,7 @@ class DimeClient
     }
 
     public function requestActivities() {
-        $route = '/public/api/activity';
-        $headers = [
-            'Authorization' =>  $this->authString,
-            'Accept' => 'application/json, text/*',
-        ];
-
-        $response = $this->client->get($this->baseUrl . $route, ['headers' => $headers]);
-        $activities = json_decode($response->getBody()->getContents());
+        $activities = $this->requestRawActivities();
 
         $output = [];
         foreach ($activities as $activity) {
@@ -92,6 +85,16 @@ class DimeClient
     }
 
     public function requestActivityIds() {
+        $activities = $this->requestRawActivities();
+
+        $ids = [];
+        foreach ($activities as $activity) {
+            $ids[] = $activity->id;
+        }
+        return $ids;
+    }
+
+    public function requestRawActivities() {
         $route = '/public/api/activity';
         $headers = [
             'Authorization' =>  $this->authString,
@@ -99,12 +102,7 @@ class DimeClient
         ];
 
         $response = $this->client->get($this->baseUrl . $route, ['headers' => $headers]);
-        $activities = json_decode($response->getBody()->getContents());
-        $ids = [];
-        foreach ($activities as $activity) {
-            $ids[] = $activity->id;
-        }
-        return $ids;
+        return json_decode($response->getBody()->getContents());
     }
 
     public function resumeActivity($activityId) {
