@@ -30,6 +30,12 @@ class ActivitiesCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Which activity?'
             )
+            ->addOption(
+                'name',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Which activity?'
+            )
        ;
     }
 
@@ -38,6 +44,10 @@ class ActivitiesCommand extends Command
         $this->client = new DimeClient();
         $task = $input->getArgument('task');
         $activityId = $input->getOption('id');
+        if ($activityId === null and $input->getOption('name') !== null) {
+            $activities = $this->client->requestActivityNames();
+            $activityId = $activities[$input->getOption('name')];
+        }
         if ($task === 'show') {
             $this->showActivities($output);
         } elseif ($task === 'resume') {

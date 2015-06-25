@@ -94,6 +94,16 @@ class DimeClient
         return $ids;
     }
 
+    public function requestActivityNames() {
+        $activities = $this->requestRawActivities();
+
+        $names = [];
+        foreach ($activities as $activity) {
+            $names[str_replace([' ', '(', ')'], ['_', '_', '_'], $activity->description)] = $activity->id;
+        }
+        return $names;
+    }
+
     public function requestRawActivities() {
         $route = '/public/api/activity';
         $headers = [

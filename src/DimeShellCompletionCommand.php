@@ -32,6 +32,16 @@ class DimeShellCompletionCommand extends CompletionCommand
             }
         );
 
-        $handler->addHandlers([$taskCompletion, $idCompletion]);
+        $nameCompletion = new Completion(
+            'activities',
+            'name',
+            Completion::TYPE_OPTION,
+            function() {
+                $client = new DimeClient();
+                return array_keys($client->requestActivityNames());
+            }
+        );
+
+        $handler->addHandlers([$taskCompletion, $idCompletion, $nameCompletion]);
     }
 }
