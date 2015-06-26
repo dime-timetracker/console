@@ -19,6 +19,7 @@ class DimeShellCompletionCommand extends CompletionCommand
                 'show',
                 'resume',
                 'stop',
+                'interactive'
             ]
         );
 

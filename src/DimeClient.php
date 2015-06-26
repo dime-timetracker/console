@@ -67,6 +67,7 @@ class DimeClient
         $activities = $this->requestRawActivities();
 
         $output = [];
+        $i = 0;
         foreach ($activities as $activity) {
             $status = 'inactive';
             foreach ($activity->timeslices as $timeslice) {
@@ -79,7 +80,7 @@ class DimeClient
             $outputLine['id'] = $activity->id;
             $outputLine['description'] = $activity->description;
             $outputLine['status'] = $status;
-            $output[] = $outputLine;
+            $output[$i++] = $outputLine;
         }
         return $output;
     }
