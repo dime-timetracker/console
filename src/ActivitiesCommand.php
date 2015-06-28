@@ -11,7 +11,7 @@ use Symfony\Component\Console\Helper\Table;
 
 class ActivitiesCommand extends Command
 {
-    protected $client;
+    protected $controller;
 
     protected function configure()
     {
@@ -40,11 +40,11 @@ class ActivitiesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->client = new DimeClient();
+        $this->controller = new DimeShellController();
         $task = $input->getArgument('task');
         $activityId = $input->getOption('id');
         if ($activityId === null and $input->getOption('name') !== null) {
-            $activities = $this->client->requestActivityNames();
+            $activities = $this->controller->requestActivityNames();
             $activityId = $activities[$input->getOption('name')];
         }
         if ($task === 'show') {
@@ -67,7 +67,7 @@ class ActivitiesCommand extends Command
     }
 
     protected function showActivities(OutputInterface $output) {
-        $result = $this->client->requestActivities();
+        $result = $this->controller->requestActivities();
 
         $table = new Table($output);
         $table
@@ -77,12 +77,12 @@ class ActivitiesCommand extends Command
     }
 
     protected function activitiesInteractive(OutputInterface $output, InputInterface $input) {
-        $interactive = new DimeShellInteractive($this->client);
+        $interactive = new DimeShellInteractive($this->controller);
         $interactive->run($output, $input);
     }
 
     protected function resumeActivity(OutputInterface $output, $activityId) {
-        $statusCode = $this->client->resumeActivity($activityId);
+        $statusCode = $this->controller->resumeActivity($activityId);
         if ($statusCode === 200) {
             $output->writeln('<info>Activity ' . $activityId . ' resumed</info>');
         } else {
@@ -91,7 +91,7 @@ class ActivitiesCommand extends Command
     }
 
     protected function stopActivity(OutputInterface $output, $activityId) {
-        $statusCode = $this->client->stopActivity($activityId);
+        $statusCode = $this->controller->stopActivity($activityId);
         if ($statusCode === 200) {
             $output->writeln('<info>Activity ' . $activityId . ' stopped</info>');
         } else {

@@ -11,15 +11,15 @@ use Symfony\Component\Console\Helper\Table;
 
 class DimeShellInteractive
 {
-    protected $client;
+    protected $controller;
 
-    public function __construct(DimeClient $client) {
-        $this->client = $client;
+    public function __construct(DimeShellController $controller) {
+        $this->controller = $controller;
     }
 
     public function run(OutputInterface $output, InputInterface $input) {
         do {
-            $result = $this->client->requestActivities();
+            $result = $this->controller->requestActivities();
             echo "\x1B[2J";  //clears the screen
             echo "\x1B[1;1H";  // move the cursor to position 1,1
             $table = new Table($output);
@@ -55,9 +55,9 @@ class DimeShellInteractive
                     }
                     if (ord($c) === 10) {  //is ENTER pressed?
                         if ($result[$line]['status'] === 'inactive') {
-                            $this->client->resumeActivity($result[$line]['id']);
+                            $this->controller->resumeActivity($result[$line]['id']);
                         } else {
-                            $this->client->stopActivity($result[$line]['id']);
+                            $this->controller->stopActivity($result[$line]['id']);
                         }
                         break;
                     }

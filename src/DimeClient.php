@@ -63,48 +63,6 @@ class DimeClient
         $this->client->post($this->baseUrl . $route, ['headers' => $headers]);
     }
 
-    public function requestActivities() {
-        $activities = $this->requestRawActivities();
-
-        $output = [];
-        $i = 0;
-        foreach ($activities as $activity) {
-            $status = 'inactive';
-            foreach ($activity->timeslices as $timeslice) {
-                if ($timeslice->stoppedAt === null) {
-                    $status = 'active';
-                    break;
-                }
-            }
-            $outputLine = [];
-            $outputLine['id'] = $activity->id;
-            $outputLine['description'] = $activity->description;
-            $outputLine['status'] = $status;
-            $output[$i++] = $outputLine;
-        }
-        return $output;
-    }
-
-    public function requestActivityIds() {
-        $activities = $this->requestRawActivities();
-
-        $ids = [];
-        foreach ($activities as $activity) {
-            $ids[] = $activity->id;
-        }
-        return $ids;
-    }
-
-    public function requestActivityNames() {
-        $activities = $this->requestRawActivities();
-
-        $names = [];
-        foreach ($activities as $activity) {
-            $names[str_replace([' ', '(', ')'], ['_', '_', '_'], $activity->description)] = $activity->id;
-        }
-        return $names;
-    }
-
     public function requestRawActivities() {
         $route = '/public/api/activity';
         $headers = [
@@ -117,7 +75,6 @@ class DimeClient
     }
 
     public function resumeActivity($activityId) {
-        $this->checkActivityId($activityId);
         $timeslices = $this->requestTimeslices($activityId);
         foreach ($timeslices as $timeslice) {
             if ($timeslice->stoppedAt === null) {
@@ -144,7 +101,6 @@ class DimeClient
     }
 
     public function stopActivity($activityId) {
-        $this->checkActivityId($activityId);
         $timeslices = $this->requestTimeslices($activityId);
         foreach ($timeslices as $timeslice) {
             if ($timeslice->stoppedAt === null) {
@@ -176,18 +132,7 @@ class DimeClient
         return $response->getStatusCode();
     }
 
-    public function checkActivityId($activityId) {
-        $activities = $this->requestActivities();
-        $activityIds = [];
-        foreach ($activities as $line) {
-            $activityIds[] = $line['id'];
-        }
-        if (!(in_array($activityId, $activityIds))) {
-            throw new \Exception('Sorry ' . $activityId . ' isn\'t the id of any activity.');
-        }
-    }
-
-    public function requestTimeslices($activityId) {
+    private function requestTimeslices($activityId) {
         $route = '/public/api/activity/' . $activityId;
         $headers = [
             'Authorization' =>  $this->authString,
