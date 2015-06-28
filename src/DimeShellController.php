@@ -1,12 +1,14 @@
 <?php
 namespace DimeConsole;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 class DimeShellController
 {
     protected $client;
 
-    public function __construct() {
-        $this->client = new DimeClient();
+    public function __construct(ContainerBuilder $services) {
+        $this->client = $services->get('client');
     }
 
     public function requestActivities() {
