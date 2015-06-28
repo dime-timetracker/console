@@ -77,52 +77,8 @@ class ActivitiesCommand extends Command
     }
 
     protected function activitiesInteractive(OutputInterface $output, InputInterface $input) {
-        do {
-            $result = $this->client->requestActivities();
-            echo "\x1B[2J";
-            echo "\x1B[1;1H";
-            $table = new Table($output);
-            $table
-                ->setHeaders(array('Id', 'Description', 'Status'))
-                ->setRows($result);
-            $table->render();
-            echo "\x1B[4;3H";
-            readline_callback_handler_install('', function () {
-            });
-            $line = 0;
-            $quit = false;
-            while (true) {
-                $r = array(STDIN);
-                $w = null;
-                $e = null;
-                $n = stream_select($r, $w, $e, 0);
-                if ($n && in_array(STDIN, $r)) {
-                    $c = stream_get_contents(STDIN, 1);
-                    if (ord($c) === 65 and $line > 0) {
-                        echo "\x1B[1A";
-                        $line--;
-                    }
-                    if (ord($c) === 66 and $line < sizeof($result) - 1) {
-                        echo "\x1B[1B";
-                        $line++;
-                    }
-                    if ($c === 'q') {
-                        $quit = true;
-                        break;
-                    }
-                    if (ord($c) === 10) {
-                        if ($result[$line]['status'] === 'inactive') {
-                            $this->client->resumeActivity($result[$line]['id']);
-                        } else {
-                            $this->client->stopActivity($result[$line]['id']);
-                        }
-                        break;
-                    }
-                }
-            }
-            readline_callback_handler_remove();
-        } while ($quit === false);
-        printf("\x1B[%d;1H", sizeof($result) + 5);
+        $interactive = new DimeShellInteractive($this->client);
+        $interactive->run($output, $input);
     }
 
     protected function resumeActivity(OutputInterface $output, $activityId) {
