@@ -12,6 +12,7 @@ use Symfony\Component\Console\Helper\Table;
 class DimeShellInteractive
 {
     protected $controller;
+    protected $activities;
 
     public function __construct(DimeShellController $controller) {
         $this->controller = $controller;
@@ -19,52 +20,58 @@ class DimeShellInteractive
 
     public function run(OutputInterface $output, InputInterface $input) {
         do {
-            $result = $this->controller->requestActivities();
-            echo "\x1B[2J";  //clears the screen
-            echo "\x1B[1;1H";  // move the cursor to position 1,1
-            $table = new Table($output);
-            $table
-                ->setHeaders(array('Id', 'Description', 'Status'))
-                ->setRows($result);
-            $table->render();
-            echo "\x1B[4;3H"; //move the cursor to position 4,3
+            $this->activities = $this->controller->requestActivities();
+            $this->show($output);
+        } while ($this->action() === true);
+        printf("\x1B[%d;1H", sizeof($this->activities) + 5); //move the cursor in the right place before finishing the app
+    }
 
-            //disables standard cli features (echo, prompt, etc.)
-            readline_callback_handler_install('', function () {
-            });
-            $line = 0;
-            $quit = false;
-            while (true) {
-                $r = array(STDIN);
-                $w = null;
-                $e = null;
-                $n = stream_select($r, $w, $e, 0); //read keystroke(s)
-                if ($n && in_array(STDIN, $r)) {
-                    $c = stream_get_contents(STDIN, 1);
-                    if (ord($c) === 65 and $line > 0) { //is arrow up pressed?
-                        echo "\x1B[1A";       //move the cursor one rom up
-                        $line--;
+    protected function show(OutputInterface $output) {
+        echo "\x1B[2J";  //clears the screen
+        echo "\x1B[1;1H";  // move the cursor to position 1,1
+        $table = new Table($output);
+        $table
+            ->setHeaders(array('Id', 'Description', 'Status'))
+            ->setRows($this->activities);
+        $table->render();
+        echo "\x1B[4;3H"; //move the cursor to position 4,3
+    }
+
+    protected function action() {
+        readline_callback_handler_install('', function () {
+        });
+        $line = 0;
+        $continueAction = true;
+        while (true) {
+            $r = array(STDIN);
+            $w = null;
+            $e = null;
+            $n = stream_select($r, $w, $e, 0); //read keystroke(s)
+            if ($n && in_array(STDIN, $r)) {
+                $pressedKey = stream_get_contents(STDIN, 1);
+                if (ord($pressedKey) === 65 and $line > 0) { //is arrow up pressed?
+                    echo "\x1B[1A";       //move the cursor one rom up
+                    $line--;
+                }
+                if (ord($pressedKey) === 66 and $line < sizeof($this->activities) - 1) {   //is arrow down pressed?
+                    echo "\x1B[1B";   //move the cursor one row down
+                    $line++;
+                }
+                if ($pressedKey === 'q') {
+                    $continueAction = false;
+                    break;
+                }
+                if (ord($pressedKey) === 10) {  //is ENTER pressed?
+                    if ($this->activities[$line]['status'] === 'inactive') {
+                        $this->controller->resumeActivity($this->activities[$line]['id']);
+                    } else {
+                        $this->controller->stopActivity($this->activities[$line]['id']);
                     }
-                    if (ord($c) === 66 and $line < sizeof($result) - 1) {   //is arrow down pressed?
-                        echo "\x1B[1B";   //move the cursor one row down
-                        $line++;
-                    }
-                    if ($c === 'q') {
-                        $quit = true;
-                        break;
-                    }
-                    if (ord($c) === 10) {  //is ENTER pressed?
-                        if ($result[$line]['status'] === 'inactive') {
-                            $this->controller->resumeActivity($result[$line]['id']);
-                        } else {
-                            $this->controller->stopActivity($result[$line]['id']);
-                        }
-                        break;
-                    }
+                    break;
                 }
             }
-            readline_callback_handler_remove();  //reenable standard cli features
-        } while ($quit === false);
-        printf("\x1B[%d;1H", sizeof($result) + 5);
+        }
+        readline_callback_handler_remove();  //reenable standard cli features
+        return $continueAction;
     }
 }
