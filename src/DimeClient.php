@@ -2,6 +2,13 @@
 namespace DimeConsole;
 use GuzzleHttp\Client;
 
+/**
+ * Class DimeClient
+ * @package DimeConsole
+ * @author Thomas Jez
+ *
+ * a PHP client for the Dime timetracker service
+ */
 class DimeClient
 {
     protected $clientId = '5F30E334-52A6-42D3-BE39-3719DE137C08';
@@ -13,16 +20,25 @@ class DimeClient
 
     protected $client;
 
+    /**
+     *
+     */
     public function __construct() {
         $this->client = new Client();
         $this->readConfig();
         $this->login();
     }
 
+    /**
+     *
+     */
     public function __destruct() {
         $this->logout();
     }
 
+    /**
+     *
+     */
     public function readConfig() {
         $configXml = simplexml_load_file(dirname(__DIR__) . '/config.xml');
         $this->username = (string)$configXml->username;
@@ -30,6 +46,9 @@ class DimeClient
         $this->baseUrl = (string)$configXml->baseUrl;
     }
 
+    /**
+     *
+     */
     public function login() {
         $route = '/public/login';
         $postData = [
@@ -55,6 +74,9 @@ class DimeClient
         $this->authString = 'DimeTimetracker ' . implode(',', $credentials);
     }
 
+    /**
+     *
+     */
     public function logout() {
         $route = '/public/logout';
         $headers = [
@@ -63,6 +85,9 @@ class DimeClient
         $this->client->post($this->baseUrl . $route, ['headers' => $headers]);
     }
 
+    /**
+     * @return mixed
+     */
     public function requestRawActivities() {
         $route = '/public/api/activity';
         $headers = [
@@ -74,6 +99,11 @@ class DimeClient
         return json_decode($response->getBody()->getContents());
     }
 
+    /**
+     * @integer $activityId
+     * @return int
+     * @throws \Exception
+     */
     public function resumeActivity($activityId) {
         $timeslices = $this->requestTimeslices($activityId);
         foreach ($timeslices as $timeslice) {
@@ -100,6 +130,11 @@ class DimeClient
         return $response->getStatusCode();
     }
 
+    /**
+     * @integer $activityId
+     * @return int
+     * @throws \Exception
+     */
     public function stopActivity($activityId) {
         $timeslices = $this->requestTimeslices($activityId);
         foreach ($timeslices as $timeslice) {
@@ -132,6 +167,10 @@ class DimeClient
         return $response->getStatusCode();
     }
 
+    /**
+     * @integer $activityId
+     * @return mixed
+     */
     private function requestTimeslices($activityId) {
         $route = '/public/api/activity/' . $activityId;
         $headers = [

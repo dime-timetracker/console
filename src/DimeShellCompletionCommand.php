@@ -7,6 +7,13 @@ use Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand;
 use Stecman\Component\Symfony\Console\BashCompletion\CompletionHandler;
 use Stecman\Component\Symfony\Console\BashCompletion\Completion;
 
+/**
+ * Class DimeShellCompletionCommand
+ * @package DimeConsole
+ * @author Thomas Jez
+ * applies Stecman Tab completion to the dime console
+ *
+ */
 class DimeShellCompletionCommand extends CompletionCommand
 {
     protected  function configureCompletion(CompletionHandler $handler)

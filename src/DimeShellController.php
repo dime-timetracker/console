@@ -3,14 +3,27 @@ namespace DimeConsole;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * Class DimeShellController
+ * @package DimeConsole
+ * @author Thomas Jez
+ *
+ * controls the Dime client and provides a minimum of business logic
+ */
 class DimeShellController
 {
     protected $client;
 
+    /**
+     * @param ContainerBuilder $services
+     */
     public function __construct(ContainerBuilder $services) {
         $this->client = $services->get('client');
     }
 
+    /**
+     * @return array
+     */
     public function requestActivities() {
         $activities = $this->client->requestRawActivities();
 
@@ -33,6 +46,9 @@ class DimeShellController
         return $output;
     }
 
+    /**
+     * @return array
+     */
     public function requestActivityIds() {
         $activities = $this->client->requestRawActivities();
 
@@ -43,6 +59,9 @@ class DimeShellController
         return $ids;
     }
 
+    /**
+     * @return array
+     */
     public function requestActivityNames() {
         $activities = $this->client->requestRawActivities();
 
@@ -53,16 +72,30 @@ class DimeShellController
         return $names;
     }
 
+    /**
+     * @param $activityId
+     * @return mixed
+     * @throws \Exception
+     */
     public function resumeActivity($activityId) {
         $this->checkActivityId($activityId);
         return $this->client->resumeActivity($activityId);
     }
 
+    /**
+     * @param $activityId
+     * @return mixed
+     * @throws \Exception
+     */
     public function stopActivity($activityId) {
         $this->checkActivityId($activityId);
         return $this->client->stopActivity($activityId);
     }
 
+    /**
+     * @param $activityId
+     * @throws \Exception
+     */
     public function checkActivityId($activityId) {
         $activities = $this->requestActivities();
         $activityIds = [];

@@ -9,15 +9,34 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
 
+/**
+ * Class DimeShellInteractive
+ * @package DimeConsole
+ * @author Thomas Jez
+ *
+ * a small curses like interactive dime console
+ *
+ * (the escape sequences and key codes look messy but HoaConsole or PHP Ncurses would cost more then its worth in
+ * this case
+ *
+ * @todo: perhaps encapsulate the commands with escape sequences and keyboard codes
+ */
 class DimeShellInteractive
 {
     protected $controller;
     protected $activities;
 
+    /**
+     * @param DimeShellController $controller
+     */
     public function __construct(DimeShellController $controller) {
         $this->controller = $controller;
     }
 
+    /**
+     * @param OutputInterface $output
+     * @param InputInterface $input
+     */
     public function run(OutputInterface $output, InputInterface $input) {
         do {
             $this->activities = $this->controller->requestActivities();
@@ -26,6 +45,9 @@ class DimeShellInteractive
         printf("\x1B[%d;1H", sizeof($this->activities) + 5); //move the cursor in the right place before finishing the app
     }
 
+    /**
+     * @param OutputInterface $output
+     */
     protected function show(OutputInterface $output) {
         echo "\x1B[2J";  //clears the screen
         echo "\x1B[1;1H";  // move the cursor to position 1,1
@@ -37,6 +59,9 @@ class DimeShellInteractive
         echo "\x1B[4;3H"; //move the cursor to position 4,3
     }
 
+    /**
+     * @return bool
+     */
     protected function action() {
         readline_callback_handler_install('', function () {
         });

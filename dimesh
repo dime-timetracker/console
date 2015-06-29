@@ -1,5 +1,8 @@
 #!/usr/bin/php
 <?php
+/**
+ * starter script for the Dime console application
+ */
 
 require __DIR__.'/vendor/autoload.php';
 

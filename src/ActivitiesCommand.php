@@ -9,10 +9,20 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
 
+/**
+ * Class ActivitiesCommand
+ * @package DimeConsole
+ *
+ * @author Thomas Jez
+ * implements the activities command for the Symfony console
+ */
 class ActivitiesCommand extends Command
 {
     protected $controller;
 
+    /**
+     *
+     */
     protected function configure()
     {
         $this
@@ -38,6 +48,11 @@ class ActivitiesCommand extends Command
        ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->controller = new DimeShellController($this->getApplication()->getServices());
@@ -66,6 +81,9 @@ class ActivitiesCommand extends Command
         }
     }
 
+    /**
+     * @param OutputInterface $output
+     */
     protected function showActivities(OutputInterface $output) {
         $result = $this->controller->requestActivities();
 
@@ -76,11 +94,19 @@ class ActivitiesCommand extends Command
         $table->render();
     }
 
+    /**
+     * @param OutputInterface $output
+     * @param InputInterface $input
+     */
     protected function activitiesInteractive(OutputInterface $output, InputInterface $input) {
         $interactive = new DimeShellInteractive($this->controller);
         $interactive->run($output, $input);
     }
 
+    /**
+     * @param OutputInterface $output
+     * @param $activityId
+     */
     protected function resumeActivity(OutputInterface $output, $activityId) {
         $statusCode = $this->controller->resumeActivity($activityId);
         if ($statusCode === 200) {
@@ -90,6 +116,10 @@ class ActivitiesCommand extends Command
         }
     }
 
+    /**
+     * @param OutputInterface $output
+     * @param $activityId
+     */
     protected function stopActivity(OutputInterface $output, $activityId) {
         $statusCode = $this->controller->stopActivity($activityId);
         if ($statusCode === 200) {
