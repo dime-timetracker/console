@@ -25,7 +25,7 @@ class DimeShellController
      * @return array
      */
     public function requestActivities() {
-        $activities = $this->client->requestRawActivities();
+        $activities = $this->client->requestActivities();
 
         $output = [];
         $i = 0;
@@ -50,7 +50,7 @@ class DimeShellController
      * @return array
      */
     public function requestActivityIds() {
-        $activities = $this->client->requestRawActivities();
+        $activities = $this->client->requestActivities();
 
         $ids = [];
         foreach ($activities as $activity) {
@@ -63,7 +63,7 @@ class DimeShellController
      * @return array
      */
     public function requestActivityNames() {
-        $activities = $this->client->requestRawActivities();
+        $activities = $this->client->requestActivities();
 
         $names = [];
         foreach ($activities as $activity) {

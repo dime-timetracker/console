@@ -88,7 +88,7 @@ class DimeClient
     /**
      * @return mixed
      */
-    public function requestRawActivities() {
+    public function requestActivities() {
         $route = '/public/api/activity';
         $headers = [
             'Authorization' =>  $this->authString,
