@@ -35,7 +35,7 @@ class DimeShellCompletionCommand extends CompletionCommand
             'id',
             Completion::TYPE_OPTION,
             function() {
-                $controller = new DimeShellController($this->getApplication()->getServices());
+                $controller = new DimeShellController($this->getApplication()->getServices()->get('client'));
                 return $controller->requestActivityIds();
             }
         );
@@ -45,7 +45,7 @@ class DimeShellCompletionCommand extends CompletionCommand
             'name',
             Completion::TYPE_OPTION,
             function() {
-                $controller = new DimeShellController($this->getApplication()->getServices());
+                $controller = new DimeShellController($this->getApplication()->getServices()->get('client'));
                 return array_keys($controller->requestActivityNames());
             }
         );

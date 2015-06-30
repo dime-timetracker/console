@@ -17,8 +17,8 @@ class DimeShellController
     /**
      * @param ContainerBuilder $services
      */
-    public function __construct(ContainerBuilder $services) {
-        $this->client = $services->get('client');
+    public function __construct(DimeClient $client) {
+        $this->client = $client;
     }
 
     /**

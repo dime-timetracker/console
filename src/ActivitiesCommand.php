@@ -55,7 +55,7 @@ class ActivitiesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->controller = new DimeShellController($this->getApplication()->getServices());
+        $this->controller = new DimeShellController($this->getApplication()->getServices()->get('client'));
         $task = $input->getArgument('task');
         $activityId = $input->getOption('id');
         if ($activityId === null and $input->getOption('name') !== null) {
