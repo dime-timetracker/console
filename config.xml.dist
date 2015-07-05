@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<DimeConsole>
-    <baseUrl>http://localhost/Dime/server</baseUrl>
-    <username>admin</username>
-    <password>kitten</password>
-</DimeConsole>
-	

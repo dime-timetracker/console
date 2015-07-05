@@ -4,4 +4,4 @@
 .project
 composer.phar
 vendor
-config.xml
+config.yml

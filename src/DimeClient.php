@@ -1,6 +1,7 @@
 <?php
 namespace DimeConsole;
 use GuzzleHttp\Client;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Class DimeClient
@@ -40,10 +41,12 @@ class DimeClient
      *
      */
     public function readConfig() {
-        $configXml = simplexml_load_file(dirname(__DIR__) . '/config.xml');
-        $this->username = (string)$configXml->username;
-        $this->password = (string)$configXml->password;
-        $this->baseUrl = (string)$configXml->baseUrl;
+
+        $yaml = new Parser();
+        $configYml = $yaml->parse(file_get_contents(dirname(__DIR__) . '/config.yml'));
+        $this->username = $configYml['username'];
+        $this->password = $configYml['password'];
+        $this->baseUrl = $configYml['base_url'];
     }
 
     /**
