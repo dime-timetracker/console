@@ -4,6 +4,8 @@ namespace DimeConsole;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
  * Class DimeShellApplication
@@ -49,6 +51,6 @@ class DimeShellApplication extends Application
     private function registerServices()
     {
         $this->services = new ContainerBuilder();
-        $this->services->register('client', '\DimeConsole\DimeClient');
-    }
+        $loader = new YamlFileLoader($this->services, new FileLocator(dirname(__DIR__)));
+        $loader->load('services.yml');    }
 }
