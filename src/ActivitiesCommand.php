@@ -77,7 +77,7 @@ class ActivitiesCommand extends Command
         } elseif ($task === 'interactive') {
             $this->activitiesInteractive($output, $input);
         } else {
-            $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommands "show", "resume" and "stop".</error>');
+            $output->writeln('<error>Sorry, for now we have only the command "activities and the subcommands "show", "resume", "stop" and "interactive".</error>');
         }
     }
 
