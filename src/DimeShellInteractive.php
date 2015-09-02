@@ -53,7 +53,7 @@ class DimeShellInteractive
         echo "\x1B[1;1H";  // move the cursor to position 1,1
         $table = new Table($output);
         $table
-            ->setHeaders(array('Id', 'Description', 'Status'))
+            ->setHeaders(array('Id', 'Description', 'Time'))
             ->setRows($this->activities);
         $table->render();
         echo "\x1B[4;3H"; //move the cursor to position 4,3
@@ -87,7 +87,7 @@ class DimeShellInteractive
                     break;
                 }
                 if (ord($pressedKey) === 10) {  //is ENTER pressed?
-                    if ($this->activities[$line]['status'] === 'inactive') {
+                    if ($this->activities[$line]['timespan'] === 'inactive') {
                         $this->controller->resumeActivity($this->activities[$line]['id']);
                     } else {
                         $this->controller->stopActivity($this->activities[$line]['id']);

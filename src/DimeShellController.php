@@ -30,17 +30,20 @@ class DimeShellController
         $output = [];
         $i = 0;
         foreach ($activities as $activity) {
-            $status = 'inactive';
+            $timespan = 'inactive';
             foreach ($activity->timeslices as $timeslice) {
                 if ($timeslice->stoppedAt === null) {
-                    $status = 'active';
+                    $startedAt = new \DateTime($timeslice->startedAt);
+                    $now = new \DateTime('now');
+                    $timespanO = $startedAt->diff($now);
+                    $timespan = $timespanO->format('%H:%I:%S');
                     break;
                 }
             }
             $outputLine = [];
             $outputLine['id'] = $activity->id;
             $outputLine['description'] = $activity->description;
-            $outputLine['status'] = $status;
+            $outputLine['timespan'] = $timespan;
             $output[$i++] = $outputLine;
         }
         return $output;
