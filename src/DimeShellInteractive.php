@@ -41,7 +41,13 @@ class DimeShellInteractive
         do {
             $this->activities = $this->controller->requestActivities();
             $this->show($output);
-        } while ($this->action() === true);
+            list($action, $actionItem) = $this->action();
+            if ($action === 'resume') {
+                $this->controller->resumeActivity($actionItem);
+            } elseif ($action === 'stop') {
+                $this->controller->stopActivity($actionItem);
+            }
+        } while ($action !== 'quit');
         printf("\x1B[%d;1H", sizeof($this->activities) + 5); //move the cursor in the right place before finishing the app
     }
 
@@ -66,7 +72,8 @@ class DimeShellInteractive
         readline_callback_handler_install('', function () {
         });
         $line = 0;
-        $continueAction = true;
+        $action = 'notquit';
+        $actionItem = 'undefined';
         while (true) {
             $r = array(STDIN);
             $w = null;
@@ -83,20 +90,21 @@ class DimeShellInteractive
                     $line++;
                 }
                 if ($pressedKey === 'q') {
-                    $continueAction = false;
+                    $action = 'quit';
                     break;
                 }
                 if (ord($pressedKey) === 10) {  //is ENTER pressed?
+                    $actionItem = $this->activities[$line]['id'];
                     if ($this->activities[$line]['timespan'] === 'inactive') {
-                        $this->controller->resumeActivity($this->activities[$line]['id']);
+                        $action = 'resume';
                     } else {
-                        $this->controller->stopActivity($this->activities[$line]['id']);
+                        $action = 'stop';
                     }
                     break;
                 }
             }
         }
         readline_callback_handler_remove();  //reenable standard cli features
-        return $continueAction;
+        return array($action, $actionItem);
     }
 }
