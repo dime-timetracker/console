@@ -41,11 +41,14 @@ class DimeShellInteractive
         do {
             $this->activities = $this->controller->requestActivities();
             $this->show($output);
-            list($action, $actionItem) = $this->action();
-            if ($action === 'resume') {
-                $this->controller->resumeActivity($actionItem);
-            } elseif ($action === 'stop') {
-                $this->controller->stopActivity($actionItem);
+            list($action, $line) = $this->action(sizeof($this->activities));
+            $actionItem = $this->activities[$line]['id'];
+            if ($action === 'enter') {
+                if ($this->activities[$line]['timespan'] === 'inactive') {
+                    $this->controller->resumeActivity($actionItem);
+                } else {
+                    $this->controller->stopActivity($actionItem);
+                }
             }
         } while ($action !== 'quit');
         printf("\x1B[%d;1H", sizeof($this->activities) + 5); //move the cursor in the right place before finishing the app
@@ -62,18 +65,19 @@ class DimeShellInteractive
             ->setHeaders(array('Id', 'Description', 'Time'))
             ->setRows($this->activities);
         $table->render();
-        echo "\x1B[4;3H"; //move the cursor to position 4,3
+        $y = 4;
+        $x = 3;
+        printf("\x1B[%d;%dH", $y, $x); //move the cursor to position 4,3
     }
 
     /**
      * @return bool
      */
-    protected function action() {
+    protected function action($anzActivities) {
         readline_callback_handler_install('', function () {
         });
         $line = 0;
-        $action = 'notquit';
-        $actionItem = 'undefined';
+        $action = 'undefined';
         while (true) {
             $r = array(STDIN);
             $w = null;
@@ -85,7 +89,7 @@ class DimeShellInteractive
                     echo "\x1B[1A";       //move the cursor one rom up
                     $line--;
                 }
-                if (ord($pressedKey) === 66 and $line < sizeof($this->activities) - 1) {   //is arrow down pressed?
+                if (ord($pressedKey) === 66 and $line < $anzActivities - 1) {   //is arrow down pressed?
                     echo "\x1B[1B";   //move the cursor one row down
                     $line++;
                 }
@@ -94,17 +98,12 @@ class DimeShellInteractive
                     break;
                 }
                 if (ord($pressedKey) === 10) {  //is ENTER pressed?
-                    $actionItem = $this->activities[$line]['id'];
-                    if ($this->activities[$line]['timespan'] === 'inactive') {
-                        $action = 'resume';
-                    } else {
-                        $action = 'stop';
-                    }
+                    $action = 'enter';
                     break;
                 }
             }
         }
         readline_callback_handler_remove();  //reenable standard cli features
-        return array($action, $actionItem);
+        return array($action, $line);
     }
 }
