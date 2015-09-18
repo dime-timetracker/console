@@ -39,12 +39,19 @@ class DimeShellInteractive
      */
     public function run(OutputInterface $output, InputInterface $input) {
         do {
+            $clock = array();
             $this->activities = $this->controller->requestActivities();
+            foreach ($this->activities as $line => $activity) {
+                if ($activity['started'] !== 'inactive') {
+                    $clock[$line] = (new \DateTime($activity['started']))->getTimestamp();
+                }
+            }
             $this->show($output);
-            list($action, $line) = $this->action(sizeof($this->activities));
+//            list($action, $line) = $this->action(sizeof($this->activities));
+            list($action, $line) = explode(',', dime_clock_action(sizeof($this->activities), $clock));
             $actionItem = $this->activities[$line]['id'];
             if ($action === 'enter') {
-                if ($this->activities[$line]['timespan'] === 'inactive') {
+                if ($this->activities[$line]['started'] === 'inactive') {
                     $this->controller->resumeActivity($actionItem);
                 } else {
                     $this->controller->stopActivity($actionItem);
@@ -62,7 +69,7 @@ class DimeShellInteractive
         echo "\x1B[1;1H";  // move the cursor to position 1,1
         $table = new Table($output);
         $table
-            ->setHeaders(array('Id', 'Description', 'Time'))
+            ->setHeaders(array('Id', 'Description', 'Duration'))
             ->setRows($this->activities);
         $table->render();
         $y = 4;
