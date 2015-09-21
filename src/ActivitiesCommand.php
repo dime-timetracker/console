@@ -89,7 +89,7 @@ class ActivitiesCommand extends Command
 
         $table = new Table($output);
         $table
-            ->setHeaders(array('Id', 'Description', 'Time'))
+            ->setHeaders(array('Id', 'Description', 'Start'))
             ->setRows($result);
         $table->render();
     }
