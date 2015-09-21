@@ -25,12 +25,14 @@ class DimeShellInteractive
 {
     protected $controller;
     protected $activities;
+    protected $hasClockThread;
 
     /**
      * @param DimeShellController $controller
      */
     public function __construct(DimeShellController $controller) {
         $this->controller = $controller;
+        $this->hasClockThread = extension_loaded('clockthread');
     }
 
     /**
@@ -47,8 +49,11 @@ class DimeShellInteractive
                 }
             }
             $this->show($output);
-//            list($action, $line) = $this->action(sizeof($this->activities));
-            list($action, $line) = explode(',', dime_clock_action(sizeof($this->activities), $clock));
+            if ($this->hasClockThread) {
+                list($action, $line) = explode(',', dime_clock_action(sizeof($this->activities), $clock));
+            } else {
+                list($action, $line) = $this->action(sizeof($this->activities));
+            }
             $actionItem = $this->activities[$line]['id'];
             if ($action === 'enter') {
                 if ($this->activities[$line]['started'] === 'inactive') {
@@ -58,7 +63,11 @@ class DimeShellInteractive
                 }
             }
         } while ($action !== 'quit');
-        printf("\x1B[%d;1H", sizeof($this->activities) + 5); //move the cursor in the right place before finishing the app
+        $y = 5;
+        if (!$this->hasClockThread) {
+            $y = 8;
+        }
+        printf("\x1B[%d;1H", sizeof($this->activities) + $y); //move the cursor in the right place before finishing the app
     }
 
     /**
@@ -68,12 +77,21 @@ class DimeShellInteractive
         echo "\x1B[2J";  //clears the screen
         echo "\x1B[1;1H";  // move the cursor to position 1,1
         $table = new Table($output);
-        $table
-            ->setHeaders(array('Id', 'Description', 'Duration'))
-            ->setRows($this->activities);
+        if ($this->hasClockThread) {
+            $table->setHeaders(array('Id', 'Description', 'Duration'));
+        } else {
+            $table->setHeaders(array('Id', 'Description', 'Start'));
+        }
+        $table->setRows($this->activities);
         $table->render();
         $y = 4;
         $x = 3;
+        if (!$this->hasClockThread) {
+            $output->writeln('<comment>');
+            $output->writeln('For full functionality please install the clocktread extension');
+            $output->writeln('(https://github.com/ThomasJez/ClockThread)');
+            $output->writeln('</comment>');
+        }
         printf("\x1B[%d;%dH", $y, $x); //move the cursor to position 4,3
     }
 
