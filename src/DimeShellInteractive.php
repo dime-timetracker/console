@@ -88,7 +88,7 @@ class DimeShellInteractive
         $x = 3;
         if (!$this->hasClockThread) {
             $output->writeln('<comment>');
-            $output->writeln('For full functionality please install the clocktread extension');
+            $output->writeln('For full functionality please install the clockthread extension');
             $output->writeln('(https://github.com/ThomasJez/ClockThread)');
             $output->writeln('</comment>');
         }
