@@ -2,6 +2,7 @@
 
 namespace DimeConsole;
 
+use Hoa\Console\Cursor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,15 +68,18 @@ class DimeShellInteractive
         if (!$this->hasClockThread) {
             $y = 8;
         }
-        printf("\x1B[%d;1H", sizeof($this->activities) + $y); //move the cursor in the right place before finishing the app
+        Cursor::moveTo(1, sizeof($this->activities) + $y);
+//        printf("\x1B[%d;1H", sizeof($this->activities) + $y); //move the cursor in the right place before finishing the app
     }
 
     /**
      * @param OutputInterface $output
      */
     protected function show(OutputInterface $output) {
-        echo "\x1B[2J";  //clears the screen
-        echo "\x1B[1;1H";  // move the cursor to position 1,1
+        Cursor::clear();
+//        echo "\x1B[2J";  //clears the screen
+        Cursor::moveTo(1, 1);
+ //       echo "\x1B[1;1H";  // move the cursor to position 1,1
         $table = new Table($output);
         if ($this->hasClockThread) {
             $table->setHeaders(array('Id', 'Description', 'Duration'));
@@ -92,7 +96,8 @@ class DimeShellInteractive
             $output->writeln('(https://github.com/ThomasJez/ClockThread)');
             $output->writeln('</comment>');
         }
-        printf("\x1B[%d;%dH", $y, $x); //move the cursor to position 4,3
+        Cursor::moveTo(4, 3);
+//        printf("\x1B[%d;%dH", $y, $x); //move the cursor to position 4,3
     }
 
     /**
@@ -111,10 +116,12 @@ class DimeShellInteractive
             if ($n && in_array(STDIN, $r)) {
                 $pressedKey = stream_get_contents(STDIN, 1);
                 if (ord($pressedKey) === 65 and $line > 0) { //is arrow up pressed?
+                    Cursor::move('u');
                     echo "\x1B[1A";       //move the cursor one rom up
                     $line--;
                 }
                 if (ord($pressedKey) === 66 and $line < $anzActivities - 1) {   //is arrow down pressed?
+                    Cursor::move('d');
                     echo "\x1B[1B";   //move the cursor one row down
                     $line++;
                 }

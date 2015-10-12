@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "16f281e9795faef9cf85ebf26b1c7d40",
+    "hash": "ee3efbb54f08b4f3ce7a95ec6e35e850",
+    "content-hash": "9e26030035ae8d45f508c7d9d6be9308",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -434,68 +435,6 @@
             "time": "2015-08-03 07:49:50"
         },
         {
-            "name": "hoathis/symfony-console-bridge",
-            "version": "1.15.01.06",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/hoaproject/Contributions-Symfony-ConsoleBridge.git",
-                "reference": "f891b6e0f29e1ed14cc00c71d3cdc47f02411c1c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/hoaproject/Contributions-Symfony-ConsoleBridge/zipball/f891b6e0f29e1ed14cc00c71d3cdc47f02411c1c",
-                "reference": "f891b6e0f29e1ed14cc00c71d3cdc47f02411c1c",
-                "shasum": ""
-            },
-            "require": {
-                "hoa/console": ">=1.0,<3.0",
-                "php": ">=5.3.3",
-                "symfony/console": "~2.3,>=2.3.6|~3.0.0"
-            },
-            "require-dev": {
-                "atoum/atoum": "~1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Hoathis\\SymfonyConsoleBridge\\": "."
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Ivan Enderlin",
-                    "email": "ivan.enderlin@hoa-project.net"
-                },
-                {
-                    "name": "Hoa community",
-                    "homepage": "http://hoa-project.net/"
-                },
-                {
-                    "name": "Julien Bianchi",
-                    "email": "julien.bianchi@hoa-project.net"
-                }
-            ],
-            "description": "The Hoa\\Console to Symfony\\Console bridge.",
-            "homepage": "http://hoa-project.net/",
-            "keywords": [
-                "Bridge",
-                "console",
-                "hoa",
-                "library",
-                "symfony"
-            ],
-            "time": "2015-01-06 11:50:54"
-        },
-        {
             "name": "psr/http-message",
             "version": "1.0",
             "source": {
@@ -550,12 +489,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stecman/symfony-console-completion.git",
-                "reference": "5c57e73d050129d00effb9a831eedc1dcb212954"
+                "reference": "983d6f07b4edf307969f4edf5ab290fd1fb2f5a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stecman/symfony-console-completion/zipball/5c57e73d050129d00effb9a831eedc1dcb212954",
-                "reference": "5c57e73d050129d00effb9a831eedc1dcb212954",
+                "url": "https://api.github.com/repos/stecman/symfony-console-completion/zipball/983d6f07b4edf307969f4edf5ab290fd1fb2f5a2",
+                "reference": "983d6f07b4edf307969f4edf5ab290fd1fb2f5a2",
                 "shasum": ""
             },
             "require": {
@@ -587,7 +526,7 @@
                 }
             ],
             "description": "Automatic BASH completion for Symfony Console Component based applications.",
-            "time": "2015-09-21 03:07:43"
+            "time": "2015-09-30 10:14:44"
         },
         {
             "name": "symfony/config",
