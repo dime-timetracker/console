@@ -99,8 +99,7 @@ class DimeShellInteractive
      * @return bool
      */
     protected function action($anzActivities) {
-        readline_callback_handler_install('', function () {
-        });
+        readline_callback_handler_install('', function (){});
         $line = 0;
         $action = 'undefined';
         while (true) {
@@ -111,12 +110,14 @@ class DimeShellInteractive
             if ($n && in_array(STDIN, $r)) {
                 $pressedKey = stream_get_contents(STDIN, 1);
                 if (ord($pressedKey) === 65 and $line > 0) { //is arrow up pressed?
-                    echo "\x1B[1A";       //move the cursor one rom up
+//                    echo "\x1B[1A";       //move the cursor one rom up
                     $line--;
+                    printf("\x1B[%d;%dH", $line + 4, 3);
                 }
                 if (ord($pressedKey) === 66 and $line < $anzActivities - 1) {   //is arrow down pressed?
-                    echo "\x1B[1B";   //move the cursor one row down
+//                    echo "\x1B[1B";   //move the cursor one row down
                     $line++;
+                    printf("\x1B[%d;%dH", $line + 4, 3);
                 }
                 if ($pressedKey === 'q') {
                     $action = 'quit';
