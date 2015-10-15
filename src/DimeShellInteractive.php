@@ -53,6 +53,7 @@ class DimeShellInteractive
             if ($this->hasClockThread) {
                 $clockId = clock_start(sizeof($this->activities), $clock);
                 list($action, $line) = $this->action(sizeof($this->activities));
+                clock_stop($clockId);
             } else {
                 list($action, $line) = $this->action(sizeof($this->activities));
             }
