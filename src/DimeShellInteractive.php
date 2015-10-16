@@ -51,12 +51,9 @@ class DimeShellInteractive
             }
             $this->show($output);
             if ($this->hasClockThread) {
-                $clockId = clock_start(sizeof($this->activities), $clock);
-                list($action, $line) = $this->action(sizeof($this->activities));
-                clock_stop($clockId);
-            } else {
-                list($action, $line) = $this->action(sizeof($this->activities));
+                $clockId = \Clockthread::start(sizeof($this->activities), $clock);
             }
+            list($action, $line) = $this->action(sizeof($this->activities));
             $actionItem = $this->activities[$line]['id'];
             if ($action === 'enter') {
                 if ($this->activities[$line]['started'] === 'inactive') {
@@ -115,13 +112,13 @@ class DimeShellInteractive
                 if (ord($pressedKey) === 65 and $line > 0) { //is arrow up pressed?
 //                    echo "\x1B[1A";       //move the cursor one rom up
                     $line--;
-                    clock_return2line($line);
+                    \Clockthread::return2line($line);
                     printf("\x1B[%d;%dH", $line + 4, 3);
                 }
                 if (ord($pressedKey) === 66 and $line < $anzActivities - 1) {   //is arrow down pressed?
 //                    echo "\x1B[1B";   //move the cursor one row down
                     $line++;
-                    clock_return2line($line);
+                    \Clockthread::return2line($line);
                     printf("\x1B[%d;%dH", $line + 4, 3);
                 }
                 if ($pressedKey === 'q') {
