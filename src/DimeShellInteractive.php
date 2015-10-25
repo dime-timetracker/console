@@ -51,7 +51,7 @@ class DimeShellInteractive
             }
             $this->show($output);
             if ($this->hasClockThread) {
-                list($action, $line) = explode(',', dime_clock_action(sizeof($this->activities), $clock));
+                list($action, $line) = dime_clock_action(sizeof($this->activities), $clock);
             } else {
                 list($action, $line) = $this->action(sizeof($this->activities));
             }
