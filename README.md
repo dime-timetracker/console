@@ -12,3 +12,4 @@ show, resume, stop, interactive.
 If you want the most advanced features of the interactive subcommand you have 
 to install the PHP Extension clockthread (https://github.com/ThomasJez/ClockThread)
 although this subcommand runs without this too (even though without clocks)
+
